@@ -23,8 +23,6 @@
     <!-- Generals  -->
     <!--+++++++++++-->
 
-    <!-- App name [CHAR LIMIT=NONE] -->
-    <string name="app_name" translatable="false">GoBees</string>
     <!-- App name - Go [CHAR LIMIT=NONE] -->
     <string name="gobees_go" translatable="false">Go</string>
     <!-- App name - Bees [CHAR LIMIT=NONE] -->
@@ -557,6 +555,14 @@
     <!-- Data deleted successfully message [CHAR LIMIT=100] -->
     <string name="all_data_deleted_msg">Data deleted!</string>
 
++    <!--+++++++++++++++-->
++    <!-- Notifications -->
++    <!--+++++++++++++++-->
++
++    <!-- Monitoring channel [CHAR LIMIT=100] -->
++    <string name="not_channel_monitoring">Monitoring</string>
++    <!-- Monitoring channel description [CHAR LIMIT=300] -->
++    <string name="not_channel_monitoring_desc">Monitoring related notifications</string>
 
     <!--+++++++++++++++++++++-->
     <!-- Share app & feedback-->
@@ -579,6 +585,7 @@
     <!-- About -->
     <!--+++++++-->
     <!-- GoBees app [CHAR LIMIT=100] -->
++
     <string name="gobees_app" translatable="false">GoBees App</string>
     <!-- App version [CHAR LIMIT=100] -->
     <string name="version">Version</string>
@@ -599,6 +606,8 @@
     <!-- Changelog [CHAR LIMIT=NONE] -->
     <string name="changelog" translatable="false">
         <![CDATA[
+         <b>Version 1.2:</b><br/>
+        - Minor improvements and fixes.<br/><br/>
         <b>Version 1.1:</b><br/>
         - Add user guide.<br/>
         - Minor improvements and fixes.<br/><br/>

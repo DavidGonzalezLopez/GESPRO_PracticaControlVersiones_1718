@@ -21,7 +21,9 @@ package com.davidmiguel.gobees.monitoring.camera;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.util.Log;
+import android.hardware.Camera.PreviewCallback;
+
+import com.davidmiguel.gobees.logging.Log;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -32,6 +34,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+ import static com.makeramen.roundedimageview.RoundedImageView.TAG;
+  
 /**
  * Implementation of the Android camera that retrieves the frames in OpenCV Mat format.
  * Based on:
@@ -45,16 +49,15 @@ import java.util.TimerTask;
  * The camera is handled in a different thread.
  */
 @SuppressWarnings("deprecation")
-public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback {
+public class AndroidCameraImpl implements AndroidCamera, PreviewCallback {
 
-    private static final String TAG = "AndroidCameraImpl";
 
     private final AndroidCameraListener user;
     private final CameraHandlerThread cameraHandlerThread;
     private final int cameraIndex;
     private android.hardware.Camera camera;
-    private int maxframewidth;
-    private int maxFrameHeight;
+     private Camera camera;
+      private int maxFrameWidth;
     private int zoomRatio;
     private long initialDelay;
     private long frameRate;
@@ -78,7 +81,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
                              long initialDelay, long frameRate) {
         this.user = user;
         this.cameraIndex = cameraIndex;
-        this.maxframewidth = maxFrameWidth;
+        this.maxFrameWidth = maxFrameWidth;
         this.maxFrameHeight = maxFrameHeight;
         this.zoomRatio = zoomRatio;
         this.initialDelay = initialDelay;
@@ -89,7 +92,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
     }
 
     @Override
-    public void onPreviewFrame(byte[] frame, android.hardware.Camera camera) {
+    public void onPreviewFrame(byte[] frame, Camera camera) {
         cameraFrame.putFrameData(frame);
         user.onPreviewFrame(cameraFrame);
     }
@@ -121,7 +124,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
                 try {
                     camera.setPreviewTexture(null);
                 } catch (IOException e) {
-                    Log.e(TAG, "Could not release preview-texture from camera.", e);
+                    Log.e(e, "Could not release preview-texture from camera.", e);
                 }
                 camera.release();
                 camera = null;
@@ -158,7 +161,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
     @SuppressWarnings("ConstantConditions")
     void initCamera() {
         // Get camera instance
-        camera = getCameraInstance(cameraIndex, maxframewidth, maxFrameHeight, zoomRatio);
+        camera = getCameraInstance(cameraIndex, maxFramewidth, maxFrameHeight, zoomRatio);
         if (camera == null) {
             return;
         }
@@ -167,7 +170,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
         int mFrameWidth = params.getPreviewSize().width;
         int mFrameHeight = params.getPreviewSize().height;
         // Create frame mat
-        Mat mFrame = new Mat(mFrameHeight + (mFrameHeight / 2), mFrameWidth, CvType.CV_8UC1);
+        Mat mFrame = new Mat(mFrameHeight   (mFrameHeight / 2), mFrameWidth, CvType.CV_8UC1);
         cameraFrame = new CameraFrame(mFrame, mFrameWidth, mFrameHeight);
         // Config texture
         if (this.texture != null) {
@@ -182,7 +185,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
             camera.startPreview();
             timer.scheduleAtFixedRate(takePhotoTask, initialDelay, frameRate);
         } catch (Exception e) {
-            Log.d(TAG, "Error starting camera preview: " + e.getMessage(), e);
+            Log.d(TAG, "Error starting camera preview: "   e.getMessage(), e);
         }
     }
 
@@ -197,7 +200,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
         // Get desired camera
         Camera cam = getCamera(facing);
         if (cam == null) {
-            Log.e(TAG, "Could not find any camera matching facing: " + facing);
+            Log.e("Could not find any camera matching facing: "   facing);
             return null;
         }
         // Set frame size
@@ -219,7 +222,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
         Camera cam = null;
         CameraInfo cameraInfo = new CameraInfo();
         int cameraCount = Camera.getNumberOfCameras();
-        for (int camIndex = 0; camIndex < cameraCount; camIndex++) {
+        for (int camIndex = 0; camIndex < cameraCount; camIndex  ) {
             Camera.getCameraInfo(camIndex, cameraInfo);
             if (cameraInfo.facing == facing) {
                 try {
@@ -227,7 +230,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
                     cam = Camera.open(camIndex);
                     break;
                 } catch (RuntimeException e) {
-                    Log.e(TAG, "AndroidCamera is not available (in use or does not exist).", e);
+                    Log.e("AndroidCamera is not available (in use or does not exist).", e);
                 }
             }
         }
@@ -253,8 +256,8 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
             previewSize = size;
         }
         if (previewSize == null) {
-            Log.e(TAG, "Could not find any camera matching sizes: "
-                    + maxFrameWidth + "x" + maxFrameHeight);
+            Log.e("Could not find any camera matching sizes: "
+                      maxFrameWidth   "x"   maxFrameHeight);
             return;
         }
         params.setPreviewSize(previewSize.width, previewSize.height);
@@ -274,7 +277,7 @@ public class AndroidCameraImpl implements AndroidCamera, Camera.PreviewCallback 
             List<Integer> zoomRatios = params.getZoomRatios();
             // Chose closest ratio
             int i;
-            for (i = 0; i < zoomRatios.size(); i++) {
+            for (i = 0; i < zoomRatios.size(); i  ) {
                 if (zoomRatio <= zoomRatios.get(i)) {
                     break;
                 }
